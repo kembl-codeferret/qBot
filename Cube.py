@@ -22,20 +22,20 @@ class Piece:
 
 class Cube:
     def __init__(self):
-        self.pieces = [Piece(n, 0) for n in range(26)]
+        self.pieces = [Piece(n, 0) for n in range(20)]
         # creates a list of pieces with three values: the piece number, position, and orientation
         print("cube formed")
 
     # find what piece is in a certain position
-    def locate(self, pos):
+    def find_piece(self, pos):
         for i in self.pieces:
             if i.pos == pos:
                 return i
+        return None
 
-    @staticmethod
-    def flipcheck(piece, axis):
+    def flip_check(self, piece, axis):
         if axis == "X": # R/L
-            if piece == 1 or piece == 7 or piece == 18 or piece == 24:
+            if piece == self.pieces[1] or piece == self.pieces[6] or piece == self.pieces[13] or piece == self.pieces[18]:
                 if piece.ori == 1:
                     return 0
                 else:
@@ -43,7 +43,7 @@ class Cube:
             else:
                 return piece.ori
         elif axis == "Y": # U/D
-            if piece == 9 or piece == 11 or piece == 14 or piece == 16:
+            if piece == self.pieces[8] or piece == self.pieces[9] or piece == self.pieces[10] or piece == self.pieces[11]:
                 if piece.ori == 1:
                     return 0
                 else:
@@ -51,13 +51,14 @@ class Cube:
             else:
                 return piece.ori
         elif axis == "Z": # F/B
-            if piece == 3 or piece == 5 or piece == 20 or piece == 22:
+            if piece == self.pieces[3] or piece == self.pieces[4] or piece == self.pieces[15] or piece == self.pieces[16]:
                 if piece.ori == 1:
                     return 0
                 else:
                     return 1
             else:
                 return piece.ori
+        return None
 
     def run_slice(self, string):
         for i in string.split(" "):
@@ -66,79 +67,79 @@ class Cube:
     def turn(self, side):
         match side:
             # Right side
-            case "R": # moving pos {2c 5e 8c 11e 16e 19c 22e 25c} -> {19c 11e 2c 22e 5e 25c 16e 8c}
-                moving = list(self.locate(n) for n in [2, 5, 8, 11, 16, 19, 22, 25])
-                to = [19, 11, 2, 22, 5, 25, 16, 8]
+            case "R": # moving pos {2c 4e 7c 9e 11e 14c 16e 19c} -> {14c 9e 2c 16e 4e 19c 11e 7c}
+                moving = [self.find_piece(n) for n in [2, 4, 7, 9, 11, 14, 16, 19]]
+                to = [14, 9, 2, 16, 4, 19, 11, 7]
                 axis = "X"
 
-                moving[0].move(to[0], moving[0].ori - 1) # 2 -> 19
-                moving[1].move(to[1], self.flipcheck(moving[1], axis)) # 5 -> 11
-                moving[2].move(to[2], moving[2].ori + 1) # 8 -> 2
-                moving[3].move(to[3], self.flipcheck(moving[3], axis)) # 11 -> 22
-                moving[4].move(to[4], self.flipcheck(moving[4], axis)) # 16 -> 5
-                moving[5].move(to[5], moving[5].ori + 1) # 19 -> 25
-                moving[6].move(to[6], self.flipcheck(moving[6], axis)) # 22 -> 16
-                moving[7].move(to[7], moving[7].ori - 1) # 25 -> 8
+                moving[0].move(to[0], moving[0].ori - 1) # 2 -> 10
+                moving[1].move(to[1], self.flip_check(moving[1], axis)) # 5 -> 9
+                moving[2].move(to[2], moving[2].ori + 1) # 7 -> 2
+                moving[3].move(to[3], self.flip_check(moving[3], axis)) # 9 -> 16
+                moving[4].move(to[4], self.flip_check(moving[4], axis)) # 11 -> 5
+                moving[5].move(to[5], moving[5].ori + 1) # 14 -> 19
+                moving[6].move(to[6], self.flip_check(moving[6], axis)) # 16 -> 11
+                moving[7].move(to[7], moving[7].ori - 1) # 19 -> 7
 
             case "R'":  # moving pos {2c 5e 8c 11e 16e 19c 22e 25c} -> {8c 16e 25c 5e 22e 2c 11e 19c}
-                moving = list(self.locate(n) for n in [2, 5, 8, 11, 16, 19, 22, 25])
-                to = [8, 16, 25, 5, 22, 2, 11, 19]
+                moving = list(self.find_piece(n) for n in [2, 4, 7, 9, 11, 14, 16, 19])
+                to = [7, 11, 19, 4, 16, 2, 9, 14]
                 axis = "X"
 
-                moving[0].move(to[0], moving[0].ori - 1)  # 2 -> 8
-                moving[1].move(to[1], self.flipcheck(moving[1], axis))  # 5 -> 16
-                moving[2].move(to[2], moving[2].ori + 1)  # 8 -> 25
-                moving[3].move(to[3], self.flipcheck(moving[3], axis))  # 11 -> 5
-                moving[4].move(to[4], self.flipcheck(moving[4], axis))  # 16 -> 22
-                moving[5].move(to[5], moving[5].ori + 1)  # 19 -> 2
-                moving[6].move(to[6], self.flipcheck(moving[6], axis))  # 22 -> 11
-                moving[7].move(to[7], moving[7].ori - 1)  # 25 -> 19
+                moving[0].move(to[0], moving[0].ori - 1)  # 2 -> 7
+                moving[1].move(to[1], self.flip_check(moving[1], axis))  # 5 -> 11
+                moving[2].move(to[2], moving[2].ori + 1)  # 7 -> 19
+                moving[3].move(to[3], self.flip_check(moving[3], axis))  # 9 -> 5
+                moving[4].move(to[4], self.flip_check(moving[4], axis))  # 11 -> 16
+                moving[5].move(to[5], moving[5].ori + 1)  # 14 -> 2
+                moving[6].move(to[6], self.flip_check(moving[6], axis))  # 16 -> 9
+                moving[7].move(to[7], moving[7].ori - 1)  # 19 -> 14
 
             case "R2":  # moving pos {2c 5e 8c 11e 16e 19c 22e 25c} -> {25c 22e 19c 16e 11e 8c 5e 2c}
-                moving = list(self.locate(n) for n in [2, 5, 8, 11, 16, 19, 22, 25])
-                to = [25, 22, 19, 16, 11, 8, 5, 2]
+                moving = list(self.find_piece(n) for n in [2, 4, 7, 9, 11, 14, 16, 19])
+                to = [19, 16, 14, 11, 9, 7, 4, 2]
 
-                moving[0].move(to[0], moving[0].ori)  # 2 -> 25
-                moving[1].move(to[1], moving[1].ori)  # 5 -> 22
-                moving[2].move(to[2], moving[2].ori)  # 8 -> 19
-                moving[3].move(to[3], moving[3].ori)  # 11 -> 16
-                moving[4].move(to[4], moving[4].ori)  # 16 -> 11
-                moving[5].move(to[5], moving[5].ori)  # 19 -> 8
-                moving[6].move(to[6], moving[6].ori)  # 22 -> 5
-                moving[7].move(to[7], moving[7].ori)  # 25 -> 2
+                moving[0].move(to[0], moving[0].ori)  # 2 -> 19
+                moving[1].move(to[1], moving[1].ori)  # 5 -> 16
+                moving[2].move(to[2], moving[2].ori)  # 7 -> 14
+                moving[3].move(to[3], moving[3].ori)  # 9 -> 11
+                moving[4].move(to[4], moving[4].ori)  # 11 -> 9
+                moving[5].move(to[5], moving[5].ori)  # 14 -> 7
+                moving[6].move(to[6], moving[6].ori)  # 16 -> 5
+                moving[7].move(to[7], moving[7].ori)  # 19 -> 2
 
             # Left Side
             case "L":
-                moving = list(self.locate(n) for n in [0, 3, 6, 9, 14, 17, 20, 23])
-                to = [6, 14, 23, 3, 20, 0, 9, 17]
+                moving = list(self.find_piece(n) for n in [0, 3, 5, 8, 10, 12, 15, 17])
+                to = [5, 10, 17, 3, 15, 0, 8, 12]
                 axis = "X"
 
                 moving[0].move(to[0], moving[0].ori + 1)
-                moving[1].move(to[1], self.flipcheck(moving[1], axis))
+                moving[1].move(to[1], self.flip_check(moving[1], axis))
                 moving[2].move(to[2], moving[2].ori - 1)
-                moving[3].move(to[3], self.flipcheck(moving[3], axis))
-                moving[4].move(to[4], self.flipcheck(moving[4], axis))
+                moving[3].move(to[3], self.flip_check(moving[3], axis))
+                moving[4].move(to[4], self.flip_check(moving[4], axis))
                 moving[5].move(to[5], moving[5].ori - 1)
-                moving[6].move(to[6], self.flipcheck(moving[6], axis))
+                moving[6].move(to[6], self.flip_check(moving[6], axis))
                 moving[7].move(to[7], moving[7].ori + 1)
 
             case "L'":
-                moving = list(self.locate(n) for n in [0, 3, 6, 9, 14, 17, 20, 23])
-                to = [17, 9, 0, 20, 3, 23, 14, 6]
+                moving = list(self.find_piece(n) for n in [0, 3, 5, 8, 10, 12, 15, 17])
+                to = [12, 8, 0, 15, 3, 17, 10, 5]
                 axis = "X"
 
                 moving[0].move(to[0], moving[0].ori + 1)
-                moving[1].move(to[1], self.flipcheck(moving[1], axis))
+                moving[1].move(to[1], self.flip_check(moving[1], axis))
                 moving[2].move(to[2], moving[2].ori - 1)
-                moving[3].move(to[3], self.flipcheck(moving[3], axis))
-                moving[4].move(to[4], self.flipcheck(moving[4], axis))
+                moving[3].move(to[3], self.flip_check(moving[3], axis))
+                moving[4].move(to[4], self.flip_check(moving[4], axis))
                 moving[5].move(to[5], moving[5].ori - 1)
-                moving[6].move(to[6], self.flipcheck(moving[6], axis))
+                moving[6].move(to[6], self.flip_check(moving[6], axis))
                 moving[7].move(to[7], moving[7].ori + 1)
 
             case "L2":
-                moving = list(self.locate(n) for n in [0, 3, 6, 9, 14, 17, 20, 23])
-                to = [23, 20, 6, 14, 9, 6, 3, 0]
+                moving = list(self.find_piece(n) for n in [0, 3, 5, 8, 10, 12, 15, 17])
+                to = [17, 15, 12, 10, 8, 5, 3, 0]
 
                 moving[0].move(to[0], moving[0].ori)
                 moving[1].move(to[1], moving[1].ori)
@@ -151,36 +152,36 @@ class Cube:
 
             # Front Side
             case "F":
-                moving = list(self.locate(n) for n in [6, 7, 8, 14, 16, 23, 24, 25])
-                to = [8, 16, 25, 7, 24, 6, 14, 23]
+                moving = list(self.find_piece(n) for n in [5, 6, 7, 10, 11, 17, 18, 19])
+                to = [7, 11, 19, 6, 18, 5, 10, 17]
                 axis = "Z"
 
                 moving[0].move(to[0], moving[0].ori + 1)
-                moving[1].move(to[1], self.flipcheck(moving[1], axis))
+                moving[1].move(to[1], self.flip_check(moving[1], axis))
                 moving[2].move(to[2], moving[2].ori - 1)
-                moving[3].move(to[3], self.flipcheck(moving[3], axis))
-                moving[4].move(to[4], self.flipcheck(moving[4], axis))
+                moving[3].move(to[3], self.flip_check(moving[3], axis))
+                moving[4].move(to[4], self.flip_check(moving[4], axis))
                 moving[5].move(to[5], moving[5].ori - 1)
-                moving[6].move(to[6], self.flipcheck(moving[6], axis))
+                moving[6].move(to[6], self.flip_check(moving[6], axis))
                 moving[7].move(to[7], moving[7].ori + 1)
 
             case "F'":
-                moving = list(self.locate(n) for n in [6, 7, 8, 14, 16, 23, 24, 25])
-                to = [23, 14, 6, 24, 7, 25, 16, 8]
+                moving = list(self.find_piece(n) for n in [5, 6, 7, 10, 11, 17, 18, 19])
+                to = [17, 10, 5, 18, 6, 19, 11, 7]
                 axis = "Z"
 
                 moving[0].move(to[0], moving[0].ori + 1)
-                moving[1].move(to[1], self.flipcheck(moving[1], axis))
+                moving[1].move(to[1], self.flip_check(moving[1], axis))
                 moving[2].move(to[2], moving[2].ori - 1)
-                moving[3].move(to[3], self.flipcheck(moving[3], axis))
-                moving[4].move(to[4], self.flipcheck(moving[4], axis))
+                moving[3].move(to[3], self.flip_check(moving[3], axis))
+                moving[4].move(to[4], self.flip_check(moving[4], axis))
                 moving[5].move(to[5], moving[5].ori - 1)
-                moving[6].move(to[6], self.flipcheck(moving[6], axis))
+                moving[6].move(to[6], self.flip_check(moving[6], axis))
                 moving[7].move(to[7], moving[7].ori + 1)
 
             case "F2":
-                moving = list(self.locate(n) for n in [6, 7, 8, 14, 16, 23, 24, 25])
-                to = [25, 24, 23, 16, 14, 8, 7, 6]
+                moving = list(self.find_piece(n) for n in [5, 6, 7, 10, 11, 17, 18, 19])
+                to = [19, 18, 17, 11, 10, 7, 6, 5]
 
                 moving[0].move(to[0], moving[0].ori)
                 moving[1].move(to[1], moving[1].ori)
@@ -193,36 +194,36 @@ class Cube:
 
             # Back Side
             case "B":
-                moving = list(self.locate(n) for n in [0, 1, 2, 9, 11, 17, 18, 19])
-                to = [17, 9, 0, 18, 1, 19, 11, 2]
+                moving = list(self.find_piece(n) for n in [0, 1, 2, 8, 9, 12, 13, 14])
+                to = [12, 8, 0, 13, 1, 14, 9, 2]
                 axis = "Z"
 
                 moving[0].move(to[0], moving[0].ori - 1)
-                moving[1].move(to[1], self.flipcheck(moving[1], axis))
+                moving[1].move(to[1], self.flip_check(moving[1], axis))
                 moving[2].move(to[2], moving[2].ori + 1)
-                moving[3].move(to[3], self.flipcheck(moving[3], axis))
-                moving[4].move(to[4], self.flipcheck(moving[4], axis))
+                moving[3].move(to[3], self.flip_check(moving[3], axis))
+                moving[4].move(to[4], self.flip_check(moving[4], axis))
                 moving[5].move(to[5], moving[5].ori + 1)
-                moving[6].move(to[6], self.flipcheck(moving[6], axis))
+                moving[6].move(to[6], self.flip_check(moving[6], axis))
                 moving[7].move(to[7], moving[7].ori - 1)
 
             case "B'":
-                moving = list(self.locate(n) for n in [0, 1, 2, 9, 11, 17, 18, 19])
-                to = [2, 11, 19, 1, 18, 0, 9, 17]
+                moving = list(self.find_piece(n) for n in [0, 1, 2, 8, 9, 12, 13, 14])
+                to = [2, 9, 14, 1, 13, 0, 8, 12]
                 axis = "Z"
 
                 moving[0].move(to[0], moving[0].ori - 1)
-                moving[1].move(to[1], self.flipcheck(moving[1], axis))
+                moving[1].move(to[1], self.flip_check(moving[1], axis))
                 moving[2].move(to[2], moving[2].ori + 1)
-                moving[3].move(to[3], self.flipcheck(moving[3], axis))
-                moving[4].move(to[4], self.flipcheck(moving[4], axis))
+                moving[3].move(to[3], self.flip_check(moving[3], axis))
+                moving[4].move(to[4], self.flip_check(moving[4], axis))
                 moving[5].move(to[5], moving[5].ori + 1)
-                moving[6].move(to[6], self.flipcheck(moving[6], axis))
+                moving[6].move(to[6], self.flip_check(moving[6], axis))
                 moving[7].move(to[7], moving[7].ori - 1)
 
             case "B2":
-                moving = list(self.locate(n) for n in [0, 1, 2, 9, 11, 17, 18, 19])
-                to = [19, 18, 17, 11, 9, 2, 1, 0]
+                moving = list(self.find_piece(n) for n in [0, 1, 2, 8, 9, 12, 13, 14])
+                to = [14, 13, 12, 9, 8, 2, 1, 0]
 
                 moving[0].move(to[0], moving[0].ori)
                 moving[1].move(to[1], moving[1].ori)
@@ -235,38 +236,38 @@ class Cube:
 
             # Up Side
             case "U":
-                moving = list(self.locate(n) for n in [0, 1, 2,
-                                                       3,    5,
-                                                       6, 7, 8])
-                to = [2, 5, 8, 1, 7, 0, 3, 6]
+                moving = list(self.find_piece(n) for n in [0, 1, 2,
+                                                           3, 4,
+                                                           5, 6, 7])
+                to = [2, 4, 7, 1, 6, 0, 3, 5]
                 axis = "Y"
 
                 moving[0].move(to[0], moving[0].ori)
-                moving[1].move(to[1], self.flipcheck(moving[1], axis))
+                moving[1].move(to[1], self.flip_check(moving[1], axis))
                 moving[2].move(to[2], moving[2].ori)
-                moving[3].move(to[3], self.flipcheck(moving[3], axis))
-                moving[4].move(to[4], self.flipcheck(moving[4], axis))
+                moving[3].move(to[3], self.flip_check(moving[3], axis))
+                moving[4].move(to[4], self.flip_check(moving[4], axis))
                 moving[5].move(to[5], moving[5].ori)
-                moving[6].move(to[6], self.flipcheck(moving[6], axis))
+                moving[6].move(to[6], self.flip_check(moving[6], axis))
                 moving[7].move(to[7], moving[7].ori)
 
             case "U'":
-                moving = list(self.locate(n) for n in [0, 1, 2, 3, 5, 6, 7, 8])
-                to = [6, 3, 0, 7, 1, 8, 5, 2]
+                moving = list(self.find_piece(n) for n in [0, 1, 2, 3, 4, 5, 6, 7])
+                to = [5, 3, 0, 6, 1, 7, 4, 2]
                 axis = "Y"
 
                 moving[0].move(to[0], moving[0].ori)
-                moving[1].move(to[1], self.flipcheck(moving[1], axis))
+                moving[1].move(to[1], self.flip_check(moving[1], axis))
                 moving[2].move(to[2], moving[2].ori)
-                moving[3].move(to[3], self.flipcheck(moving[3], axis))
-                moving[4].move(to[4], self.flipcheck(moving[4], axis))
+                moving[3].move(to[3], self.flip_check(moving[3], axis))
+                moving[4].move(to[4], self.flip_check(moving[4], axis))
                 moving[5].move(to[5], moving[5].ori)
-                moving[6].move(to[6], self.flipcheck(moving[6], axis))
+                moving[6].move(to[6], self.flip_check(moving[6], axis))
                 moving[7].move(to[7], moving[7].ori)
 
             case "U2":
-                moving = list(self.locate(n) for n in [0, 1, 2, 3, 5, 6, 7, 8])
-                to = [8, 7, 6, 5, 3, 2, 1, 0]
+                moving = list(self.find_piece(n) for n in [0, 1, 2, 3, 4, 5, 6, 7])
+                to = [7, 6, 5, 4, 3, 2, 1, 0]
 
                 moving[0].move(to[0], moving[0].ori)
                 moving[1].move(to[1], moving[1].ori)
@@ -279,36 +280,36 @@ class Cube:
 
             # Down Side
             case "D":
-                moving = list(self.locate(n) for n in [17, 18, 19, 20, 22, 23, 24, 25])
-                to = [23, 20, 17, 24, 18, 25, 22, 19]
+                moving = list(self.find_piece(n) for n in [12, 13, 14, 15, 16, 17, 18, 19])
+                to = [17, 15, 12, 18, 13, 19, 16, 14]
                 axis = "Y"
 
                 moving[0].move(to[0], moving[0].ori)
-                moving[1].move(to[1], self.flipcheck(moving[1], axis))
+                moving[1].move(to[1], self.flip_check(moving[1], axis))
                 moving[2].move(to[2], moving[2].ori)
-                moving[3].move(to[3], self.flipcheck(moving[3], axis))
-                moving[4].move(to[4], self.flipcheck(moving[4], axis))
+                moving[3].move(to[3], self.flip_check(moving[3], axis))
+                moving[4].move(to[4], self.flip_check(moving[4], axis))
                 moving[5].move(to[5], moving[5].ori)
-                moving[6].move(to[6], self.flipcheck(moving[6], axis))
+                moving[6].move(to[6], self.flip_check(moving[6], axis))
                 moving[7].move(to[7], moving[7].ori)
 
             case "D'":
-                moving = list(self.locate(n) for n in [17, 18, 19, 20, 22, 23, 24, 25])
-                to = [19, 22, 25, 18, 24, 17, 20, 23]
+                moving = list(self.find_piece(n) for n in [12, 13, 14, 15, 16, 17, 18, 19])
+                to = [14, 16, 19, 13, 18, 12, 15, 17]
                 axis = "Y"
 
                 moving[0].move(to[0], moving[0].ori)
-                moving[1].move(to[1], self.flipcheck(moving[1], axis))
+                moving[1].move(to[1], self.flip_check(moving[1], axis))
                 moving[2].move(to[2], moving[2].ori)
-                moving[3].move(to[3], self.flipcheck(moving[3], axis))
-                moving[4].move(to[4], self.flipcheck(moving[4], axis))
+                moving[3].move(to[3], self.flip_check(moving[3], axis))
+                moving[4].move(to[4], self.flip_check(moving[4], axis))
                 moving[5].move(to[5], moving[5].ori)
-                moving[6].move(to[6], self.flipcheck(moving[6], axis))
+                moving[6].move(to[6], self.flip_check(moving[6], axis))
                 moving[7].move(to[7], moving[7].ori)
 
             case "D2":
-                moving = list(self.locate(n) for n in [17, 18, 19, 20, 22, 23, 24, 25])
-                to = [25, 24, 23, 22, 20, 19, 18, 17]
+                moving = list(self.find_piece(n) for n in [12, 13, 14, 15, 16, 17, 18, 19])
+                to = [19, 18, 17, 16, 15, 14, 13, 12]
 
                 moving[0].move(to[0], moving[0].ori)
                 moving[1].move(to[1], moving[1].ori)
@@ -323,4 +324,3 @@ class Cube:
                 i.ori += 3
             while i.ori > 2:
                 i.ori -= 3
-
